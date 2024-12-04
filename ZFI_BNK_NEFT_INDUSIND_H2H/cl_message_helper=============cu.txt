@@ -1,0 +1,171 @@
+"! Utility Class for Statement MESSAGE
+class cl_message_helper definition
+  public
+  final
+  create private .
+
+  public section.
+
+    "! Transfer structure for parameters in OTR texts (type String)
+    types otr_parameter type sbtfr_param.
+
+    "! Table with assignment of parameter and value (type String)
+    types otr_parameters type standard table of otr_parameter with default key.
+
+    "! Transfer structure for parameters in OTR texts (type String)
+    types otr_char_parameter type sotr_param.
+
+    "! Table with assignment of parameter and value (type String)
+    types otr_char_parameters type standard table of otr_char_parameter with default key.
+
+    "! OTR Id
+    types otr_id type sotr_conc.
+
+    "! The message object used by MESSAGE
+    class-data message_object type ref to if_message .
+
+    "! Gets the top T100 exception from PREVIOUS chain
+    "! @parameter EXCEPTION | Top object of scanned exception objects
+    "! @parameter RESULT | Top exception object with non-empty T100 text
+    class-methods get_latest_t100_exception
+      importing
+        !exception    type ref to cx_root
+      returning
+        value(result) type ref to if_t100_message .
+
+
+    "! Returns Long Text for Parameter(s)
+    "! @parameter TEXT | Message
+    "! @parameter PRESERVE_NEWLINES | Preserves new line in message
+    "! @parameter T100_PREPEND_SHORT | True if the short text is comes first in T100 texts
+    "! @parameter RESULT | Text
+    class-methods get_longtext_for_message
+      importing
+        value(text)               type ref to if_message
+        value(preserve_newlines)  type abap_bool optional
+        value(t100_prepend_short) type abap_bool default abap_true
+      returning
+        value(result)             type string .
+
+
+    "! Returns Short Text for Parameter(s)
+    "! @parameter TEXT | Message containing text
+    "! @parameter RESULT | result string
+    class-methods get_text_for_message
+      importing
+        value(text)   type ref to if_message
+      returning
+        value(result) type string .
+
+    "! Sets MESSAGE variables, if TEXT is of type CLIKE
+    "! @parameter TEXT | text
+    class-methods set_msg_vars_for_clike
+      importing
+        value(text) type clike .
+
+    "! Sets MESSAGE Variables, REF TO IF_T100_MESSAGE
+    "! @parameter TEXT | Message object
+    "! @raising CX_SY_MESSAGE_ILLEGAL_TEXT | Invalid MESSAGE Text Parameter
+    class-methods set_msg_vars_for_if_t100_msg
+      importing
+        value(text) type ref to if_t100_message
+      raising
+        cx_sy_message_illegal_text .
+
+    "! Sets MESSAGE Variables, if Text Is of Type ANY
+    "! @parameter TEXT | Message
+    "! @parameter STRING | Result
+    "! @raising CX_SY_MESSAGE_ILLEGAL_TEXT | Invalid MESSAGE Text Parameter
+    class-methods set_msg_vars_for_any
+      importing
+        !text         type any
+      exporting
+        value(string) type string
+      raising
+        cx_sy_message_illegal_text .
+
+    "! Sets MESSAGE Variables, REF TO IF_MESSAGE
+    "! @parameter TEXT | Message object
+    "! @parameter STRING | String for transfer to MESSAGE
+    "! @raising CX_SY_MESSAGE_ILLEGAL_TEXT | Invalid MESSAGE Text Parameter
+    class-methods set_msg_vars_for_if_msg
+      importing
+        value(text)   type ref to if_message
+      exporting
+        value(string) type string
+      raising
+        cx_sy_message_illegal_text .
+
+    "! Sets Appropriate Key for MESSAGE
+    "! @parameter MSG | Message object
+    "! @parameter T100KEY | T100 key with mapping of parameters to attribute names
+    "! @parameter TEXTID | Key for logical object in OTR
+    class-methods check_msg_kind
+      importing
+        value(msg)     type ref to if_message
+      exporting
+        value(t100key) type scx_t100key
+        value(textid)  type otr_id.
+
+    "! Returns Text Parameter
+    "! @parameter OBJ | Object, the attributes are read from
+    "! @parameter PARAMS | Table with assignment of parameters and values
+    class-methods get_text_params
+      importing
+        value(obj) type ref to object
+      exporting
+        !params    type otr_char_parameters.
+
+    "! Returns OTR Short Text Without Parameter Setting
+    "! @parameter TEXTID | Key for logical object in OTR
+    "! @parameter RESULT | Short text
+    class-methods get_otr_text_raw
+      importing
+        !textid type otr_id
+      exporting
+        !result type string .
+
+    "! Returns T100 short text
+    "! @parameter OBJ | Object
+    "! @parameter T100KEY | T100 key with mapping of parameters to attribute names
+    "! @parameter RESULT | Short text
+    class-methods get_t100_text_for
+      importing
+        value(obj) type ref to object
+        !t100key   type scx_t100key
+      exporting
+        !result    type string .
+
+    "! Gets T100 message
+    "! @parameter OBJ | Message object
+    "! @parameter RESULT | T100 message
+    class-methods get_t100_for_object
+      importing
+        !obj          type ref to if_t100_message
+      returning
+        value(result) type symsg .
+
+    "! Replaces text parameter
+    "! @parameter OBJ | Object
+    "! @parameter RESULT | Text
+    class-methods replace_text_params
+      importing
+        value(obj) type ref to object
+      changing
+        !result    type string .
+
+    "! Replaces new lines with blank characters
+    "! @parameter MESSAGE | Text
+    class-methods strip_newlines_from
+      changing
+        !message type string .
+
+    "! Return text parameters
+    "! @parameter OBJ | Object
+    "! @parameter PARAMS | Table with assignment of parameter and value
+    class-methods get_text_sparams
+      importing
+        value(obj) type ref to object
+      exporting
+        !params    type otr_parameters.
+

@@ -1,0 +1,23 @@
+class CX_SY_ITAB_LINE_NOT_FOUND definition
+  public
+  inheriting from CX_SY_ITAB_ERROR
+  final
+  create public .
+
+public section.
+
+  constants CX_SY_ITAB_LINE_NOT_FOUND type SOTR_CONC value 'E61F13F7B4071ED1B9A737CCF34D481F' ##NO_TEXT.
+  constants INDEX_ACCESS type SOTR_CONC value 'E61F13F7B4071ED1B9A75B2C4EA78821' ##NO_TEXT.
+  constants KEY_ACCESS type SOTR_CONC value 'E61F13F7B4071ED1B9A75CD438968821' ##NO_TEXT.
+  constants FREE_KEY_ACCESS type SOTR_CONC value '4635000000311EE5B1D392AE4164EE86' ##NO_TEXT.
+  data INDEX type I value 0 ##NO_TEXT.
+  data KEY_NAME type STRING .
+  data KEY_COMP_VALUES type STRING .
+
+  methods CONSTRUCTOR
+    importing
+      !TEXTID like TEXTID optional
+      !PREVIOUS like PREVIOUS optional
+      !INDEX type I default 0
+      !KEY_NAME type STRING optional
+      !KEY_COMP_VALUES type STRING optional .
